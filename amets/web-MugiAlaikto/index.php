@@ -25,11 +25,12 @@ include 'konexioa.php';
       <a href="index.php" class="button">Menua</a>
       <a href="historial.php" class="button">Historiala</a>
       <a href="hasisaioa.php" class="button">Saioa Hasi</a>
+      <a href="gidari.php" class="button">Gidaria</a>
     </nav>
     <header>
   <nav>
     <?php if (isset($_SESSION['korreoa'])): ?>
-      <span>Kaixo, <?php echo htmlspecialchars($_SESSION['korreoa']); ?></span>
+      <span><?php echo htmlspecialchars($_SESSION['korreoa']); ?></span>
     <?php else: ?>
     <?php endif; ?>
   </nav>

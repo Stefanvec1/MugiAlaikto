@@ -7,8 +7,43 @@ if (!isset($_SESSION['usuario_id'])) {
     header("Location: hasisaioa.php?alerta=debes_iniciar_sesion");
     exit();
 }
+
+// Si se ha enviado el formulario, procesar los datos
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $hasieraData = $_POST['data_irteera'];
+    $hasieraOrdua = $_POST['ordu_irteera'];
+    $abiapuntua = $_POST['irteera'];
+    $helmuga = $_POST['helmuga'];
+    $pertsonaKop = $_POST['pasaiariak'];
+
+    // ID del usuario logueado (cliente)
+    $bezeroID = $_SESSION['usuario_id'];
+
+    // Insertar en la tabla bidaia (sin amaiera data/ordua)
+    $sql = "INSERT INTO bidaia (
+                Abiapuntua, Helmuga, HasieraData, HasieraOrdua,
+                Bezeroa_BezeroID, Langilea_LangileID, Egoera, PertsonaKop
+            ) VALUES (?, ?, ?, ?, ?, NULL, 0, ?)";
+
+    $stmt = $conn->prepare($sql);
+    if ($stmt) {
+        $stmt->bind_param("ssssii", $abiapuntua, $helmuga, $hasieraData, $hasieraOrdua, $bezeroID, $pertsonaKop);
+        if ($stmt->execute()) {
+            header("Location: historial.php?mezua=erreserba_egin_da");
+            exit();
+        } else {
+            echo "Errorea erreserba gordetzean: " . $stmt->error;
+        }
+        $stmt->close();
+    } else {
+        echo "Errorea SQL prestaketarekin: " . $conn->error;
+    }
+
+    $conn->close();
+}
 ?>
 
+<!-- HTML HTML HTML -->
 <!DOCTYPE html>
 <html lang="eu">
 <head>
@@ -40,12 +75,6 @@ if (!isset($_SESSION['usuario_id'])) {
     <label for="ordu_irteera">Irteeraren ordua:</label>
     <input type="time" id="ordu_irteera" name="ordu_irteera" required>
 
-    <label for="data_iristea">Iristearen data:</label>
-    <input type="date" id="data_iristea" name="data_iristea" required>
-
-    <label for="ordu_iristea">Iristearen ordua:</label>
-    <input type="time" id="ordu_iristea" name="ordu_iristea" required>
-
     <label for="pasaiariak">Pasaiari kopurua:</label>
     <input type="number" id="pasaiariak" name="pasaiariak" min="1" required>
 
@@ -58,7 +87,6 @@ if (!isset($_SESSION['usuario_id'])) {
     <input type="submit" value="Erreserbatu">
   </form>
 </div>
-
 <footer>
   <div style="max-width: 1200px; margin: 0 auto; padding: 30px; background-color: #0d0d0d; color: #ccc; font-size: 0.95em;">
     <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px;">

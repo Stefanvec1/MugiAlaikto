@@ -6,6 +6,8 @@
   --hover-color: #a9844f;
 }
 
+/* Fondo y body */
+
 body {
   margin: 0;
   font-family: 'Poppins', 'Segoe UI', sans-serif;
@@ -15,6 +17,8 @@ body {
   background-attachment: fixed;
   color: var(--text-color);
 }
+
+/* Header */
 
 header.main-header {
   background-color: var(--primary-color);
@@ -35,6 +39,7 @@ nav {
   gap: 20px;
 }
 
+nav a,
 .button {
   text-decoration: none;
   background-color: transparent;
@@ -46,10 +51,24 @@ nav {
   transition: all 0.3s ease;
 }
 
+nav a:hover,
 .button:hover {
   background-color: var(--accent-color);
   color: var(--primary-color);
 }
+
+/* Botones deshabilitados */
+
+.button:disabled,
+button:disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  color: #777;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Sección principal con imágenes y mapa */
 
 .main-section {
   display: flex;
@@ -57,6 +76,8 @@ nav {
   justify-content: center;
   gap: 40px;
   padding: 60px 30px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .image-box,
@@ -79,6 +100,8 @@ nav {
   border: none;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
+
+/* Info */
 
 .info {
   padding: 40px 60px;
@@ -119,12 +142,19 @@ nav {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
+/* Footer */
+
 footer {
   background-color: var(--primary-color);
   color: #999;
   text-align: center;
   padding: 25px;
   font-size: 0.95em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 footer a {
@@ -136,6 +166,8 @@ footer a {
 footer a:hover {
   color: var(--accent-color);
 }
+
+/* Media Queries para móviles */
 
 @media screen and (max-width: 768px) {
   .main-section {
@@ -155,7 +187,10 @@ footer a:hover {
   }
 }
 
-.login-container {
+/* Formularios */
+
+.login-container,
+.register-container {
   max-width: 420px;
   margin: 80px auto;
   background-color: rgba(255, 255, 255, 0.85);
@@ -164,7 +199,8 @@ footer a:hover {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.login-container h2 {
+.login-container h2,
+.register-container h2 {
   text-align: center;
   margin-bottom: 30px;
   color: var(--primary-color);
@@ -181,12 +217,29 @@ label {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="address"] {
   padding: 10px 12px;
   margin-bottom: 20px;
   border-radius: 8px;
   border: 1px solid #ccc;
   font-size: 1em;
+  background-color: #fafafa;
+  font-family: inherit;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+  outline: none;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="address"]:focus {
+  border-color: var(--accent-color);
+  background-color: #fff;
+  box-shadow: 0 0 5px var(--accent-color);
 }
 
 input[type="submit"] {
@@ -204,82 +257,34 @@ input[type="submit"]:hover {
   background-color: var(--hover-color);
 }
 
-.register-link {
-  text-align: center;
-  margin-top: 20px;
-  font-size: 0.95em;
-}
-
-.register-link a {
-  color: var(--accent-color);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.register-link a:hover {
-  text-decoration: underline;
-}
-.register-container {
-  max-width: 420px;
-  margin: 80px auto;
-  background-color: rgba(255, 255, 255, 0.85);
-  padding: 40px;
-  border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.register-container h2 {
-  text-align: center;
-  margin-bottom: 30px;
-  color: var(--primary-color);
-}
-
-input[type="email"],
-input[type="tel"],
-input[type="address"] {
-  padding: 12px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1.1em;
-  background-color: #fafafa;
-  transition: border-color 0.3s ease;
-}
-
-input[type="password"]:focus,
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="tel"]:focus {
-  border-color: var(--accent-color);
-  background-color: #fff;
-}
-
+.register-link,
 .login-link {
   text-align: center;
   margin-top: 20px;
   font-size: 0.95em;
 }
 
+.register-link a,
 .login-link a {
   color: var(--accent-color);
   text-decoration: none;
   font-weight: 500;
 }
 
+.register-link a:hover,
 .login-link a:hover {
   text-decoration: underline;
 }
-.main-section {
-  padding: 40px 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+
+/* Tablas */
 
 .table-container {
   background-color: #fff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .table-container h3 {
@@ -294,11 +299,14 @@ table {
   margin-top: 20px;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1px solid #ccc;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: left;
 }
@@ -311,6 +319,51 @@ th {
 td {
   background-color: #fafafa;
 }
+
+/* Tablas responsivas para móvil */
+
+@media (max-width: 600px) {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
+    display: block;
+  }
+
+  thead tr {
+    display: none;
+  }
+
+  tr {
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--accent-color);
+  }
+
+  td {
+    background-color: transparent;
+    border: none;
+    position: relative;
+    padding-left: 50%;
+    text-align: left;
+  }
+
+  td::before {
+    position: absolute;
+    top: 12px;
+    left: 15px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: 700;
+    color: var(--primary-color);
+    content: attr(data-label);
+  }
+}
+
+/* Reserva */
+
 .reserva-flecha {
   position: absolute;
   bottom: 320px;
@@ -347,10 +400,136 @@ td {
   font-size: 1.5rem;
   font-weight: bold;
   font-family: 'Poppins', sans-serif;
-  background-color: rgba(0, 0, 0, 0.252); /* fondo negro semitransparente */
+  background-color: rgba(0, 0, 0, 0.252);
   padding: 10px 20px;
   border-radius: 12px;
-  pointer-events: none; /* no bloquea el clic */
-  text-shadow: 1px 1px 5px rgba(0,0,0,0.8); /* para destacar el texto */
+  pointer-events: none;
+  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.8);
 }
 
+/* Mensajes de error y éxito */
+
+.message-error {
+  background-color: #ffdddd;
+  color: #a33;
+  border: 1px solid #a33;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.message-success {
+  background-color: #ddffdd;
+  color: #2a7;
+  border: 1px solid #2a7;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Accesibilidad: foco visible */
+
+a:focus,
+.button:focus {
+  outline: 3px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Botones dentro de reserva o similares */
+
+.reserva-contenedor button,
+.reserva-contenedor a.button {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.reserva-contenedor button:hover,
+.reserva-contenedor a.button:hover {
+  background-color: var(--hover-color);
+  color: var(--secondary-color);
+}
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.tab {
+  padding: 12px 24px;
+  background-color: var(--primary-color);
+  color: var(--accent-color);
+  border-radius: 25px;
+  border: 2px solid var(--accent-color);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.tab:hover {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+}
+
+.tab.active {
+  background-color: var(--accent-color);
+  color: var(--primary-color);
+}
+
+/* Tab contents */
+.tab-content {
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Card para cada bidaia */
+.bidaia-card {
+  background-color: #ffffffdd;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.bidaia-card p {
+  margin: 8px 0;
+  font-size: 1em;
+}
+
+.bidaia-card form {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.bidaia-card button {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.bidaia-card button:hover {
+  background-color: var(--hover-color);
+}
+
+/* Animación para transición suave */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
