@@ -2,8 +2,51 @@
 session_start();
 include("konexioa.php");
 
-if (isset($_GET['alerta']) && $_GET['alerta'] === 'login') {
-    echo "<script>alert('Erreserba egiteko, saioa hasi behar duzu.');</script>";
+$error = "";
+$login_type = $_POST['login_type'] ?? null;
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && $login_type) {
+  $korreoa = $_POST['korreoa'] ?? '';
+  $pasahitza = $_POST['pasahitza'] ?? '';
+  
+
+    if (!empty($korreoa) && !empty($pasahitza)) {
+        if ($login_type === "bezeroa") {
+            $stmt = $conn->prepare("SELECT * FROM bezeroa WHERE Korreoa = ? AND Pasahitza = ?");
+            $stmt->bind_param("ss", $korreoa, $pasahitza);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $_SESSION['usuario'] = $korreoa;
+                $_SESSION['usuario_id'] = $row['BezeroID'];
+                header("Location: index.php");
+                exit;
+            } else {
+                $error = "Bezeroaren datuak ez dira zuzenak.";
+            }
+        } elseif ($login_type === "gidaria") {
+            $stmt = $conn->prepare("SELECT * FROM langilea WHERE Korreoa = ? AND Pasahitza = ?");
+            $stmt->bind_param("ss", $korreoa, $pasahitza);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                if ($row['Mota'] == 2) {
+                    $_SESSION['gidari_id'] = $row['LangileID'];
+                    $_SESSION['gidari_korreoa'] = $row['Korreoa'];
+                    header("Location: gidari_panela.php");
+                    exit;
+                } else {
+                    $error = "Ez zara gidari baimendua.";
+                }
+            } else {
+                $error = "Gidariaren datuak ez dira zuzenak.";
+            }
+        }
+    } else {
+        $error = "Sartu korreoa eta pasahitza.";
+    }
 }
 ?>
 
@@ -11,114 +54,97 @@ if (isset($_GET['alerta']) && $_GET['alerta'] === 'login') {
 <html lang="eu">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Saioa Hasi | AlaiktoMUGI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    .login-form { display: none; }
+    .login-container select, .login-container form { margin-top: 15px; }
+  </style>
+<script>
+  function mostrarFormulario() {
+    const tipo = document.getElementById('login_type').value;
+    document.getElementById('gidaria_form').style.display = tipo === 'gidaria' ? 'block' : 'none';
+    document.getElementById('bezeroa_form').style.display = tipo === 'bezeroa' ? 'block' : 'none';
+  }
+
+  window.onload = mostrarFormulario; // Mostrar el formulario correcto al cargar la página
+</script>
+
 </head>
 <body>
 
 <header class="main-header">
-  <div class="logo">
-    <img src="imgs/logo_sin_texto_ampliado.png" alt="AlaiktoMUGI logo">
-  </div>
+  <a href="index.php"><div class="logo"><img src="imgs/logo_sin_texto_ampliado.png" alt="Logo"></div></a>
   <nav>
     <a href="index.php" class="button">Menua</a>
-    <a href="historial.php" class="button">Historiala</a>
-    <?php if (isset($_SESSION['usuario'])): ?>
-      <a href="saioaitxi.php" class="button">Saioa Itxi</a>
+    <?php if (isset($_SESSION['usuario']) || isset($_SESSION['gidari_korreoa'])): ?>
+      <a href="saioa_itxi.php" class="button">Saioa Itxi</a>
     <?php else: ?>
       <a href="hasisaioa.php" class="button">Saioa Hasi</a>
     <?php endif; ?>
   </nav>
 </header>
 
-<div class="login-container">
-  <h2>
-    <?php echo isset($_SESSION['usuario']) ? 'Saioa Hasita' : 'Saioa Hasi'; ?>
-  </h2>
+<main class="login-container">
 
-  <?php if (isset($_SESSION['usuario'])): ?>
-    <p style="text-align: center; font-size: 1.1em;">
-      Ongi etorri, <?php echo htmlspecialchars($_SESSION['usuario']); ?>!
-    </p>
-  <?php else: ?>
-    <form action="hasisaioa.php" method="POST">
-      <label for="usuario">Erabiltzailea:</label>
-      <input type="text" id="usuario" name="usuario" required />
+  <div style="max-width: 350px; margin: 0 auto; padding: 25px; background-color: #f4f4f4; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+    
+    <h2 style="text-align: center; margin-bottom: 20px;">🔐 Hasi Saioa</h2>
+    
+    <label for="login_type" style="display: block; margin-bottom: 8px; font-weight: bold;">
+      Hautatu erabiltzaile mota:
+    </label>
+    
+    <select id="login_type" onchange="mostrarFormulario()" style="width: 100%; padding: 10px; font-size: 1em; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 20px;">
+      <option value="bezeroa">👥 Bezeroa</option>
+      <option value="gidaria">🚖 Gidaria</option>
+    </select>
 
-      <label for="pasahitza">Pasahitza:</label>
-      <input type="password" id="pasahitza" name="pasahitza" required />
+    <?php if (!empty($error)) echo "<p style='color:red;'>$error</p>"; ?>
 
-      <input type="submit" value="Hasi saioa" />
+<!-- Gidaria Form -->
+<form id="gidaria_form" class="login-form" method="POST" action="hasisaioa.php">
+  <input type="hidden" name="login_type" value="gidaria">
 
-      <div class="register-link">
-        Ez duzu konturik? <a href="erregistroa.php">Erregistratu orain</a>
-      </div>
+  <label for="korreoa">Erabiltzailea:</label>
+  <input type="text" name="korreoa" required>
 
-      <?php
-      if ($_SERVER["REQUEST_METHOD"] === "POST") {
-          $usuario = $_POST['usuario'];
-          $pasahitza = $_POST['pasahitza'];
+  <label for="pasahitza">Pasahitza:</label>
+  <input type="password" name="pasahitza" required>
 
-          if (empty($usuario) || empty($pasahitza)) {
-              $message = "errordata";
-          } else {
-              $stmt = $conn->prepare("SELECT * FROM bezeroa WHERE Korreoa = ? AND Pasahitza = ?");
-              $stmt->bind_param("ss", $usuario, $pasahitza);
-              $stmt->execute();
-              $result = $stmt->get_result();
+  <input type="submit" value="Saioa hasi">
+</form>
 
-              if ($result->num_rows > 0) {
-                  $row = $result->fetch_assoc();
-                  $_SESSION['usuario'] = $usuario;
-$_SESSION['usuario_id'] = $row['BezeroID'];
-$_SESSION['korreoa'] = $row['Korreoa'];  // ✅ ESTA ES LA NUEVA LÍNEA
+<!-- Bezeroa Form -->
+<form id="bezeroa_form" class="login-form" method="POST" action="hasisaioa.php">
+  <input type="hidden" name="login_type" value="bezeroa">
+
+  <label for="korreoa">Erabiltzailea:</label>
+  <input type="text" name="korreoa" required>
+
+  <label for="pasahitza">Pasahitza:</label>
+  <input type="password" name="pasahitza" required>
+
+  <input type="submit" value="Saioa hasi">
+</form>
 
 
-                  // Redirigir al index.php después de login exitoso
-                  header("Location: index.php");
 
-                  exit;
-              } else {
-                  $message = "errorlogin";
-              }
 
-              $stmt->close();
-              $conn->close();
-          }
-      }
+  </div>
 
-      if (isset($message)) {
-          if ($message == "errordata") {
-              echo "<p style='color: red;'>Sartu erabiltzaile eta pasahitz baliozkoak.</p>";
-          } elseif ($message == "errorlogin") {
-              echo "<p style='color: red;'>Kredentzial okerrak. Saiatu berriro.</p>";
-          }
-      }
-      ?>
-    </form>
-  <?php endif; ?>
-</div>
+</main>
 
 <footer>
-  <div style="max-width: 1200px; margin: 0 auto; padding: 30px; background-color: #0d0d0d; color: #ccc; font-size: 0.95em;">
-    <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 20px;">
-      <div>
-        <strong>AlaiktoMUGI S.A.</strong><br>
-        Tel: <a href="tel:+34900123456" style="color: #ccc;">+34 900 123 456</a><br>
-        Email: <a href="mailto:info@alaiktomugi.eus" style="color: #ccc;">info@alaiktomugi.eus</a><br>
-        Helbidea: Donostia kalea 7, 20001 Bilbo, Euskal Herria
-      </div>
-      <div>
-        <a href="https://facebook.com" target="_blank"><img src="imgs/descarga.jpg" alt="Facebook" width="24"></a>
-        <a href="https://twitter.com" target="_blank"><img src="imgs/descarga (1).jpg" alt="Twitter" width="24"></a>
-        <a href="https://instagram.com" target="_blank"><img src="imgs/descarga.png" alt="Instagram" width="24"></a>
-      </div>
-      <div style="margin-top: 20px; font-size: 0.85em; color: #888;">
-        &copy; 2025 AlaiktoMUGI S.A. - Eskubide guztiak erreserbatuta
-      </div>
-    </div>
+  <div style="max-width: 1200px; margin: auto; padding: 30px; background: #0d0d0d; color: #ccc; text-align: center;">
+    <strong>AlaiktoMUGI S.A.</strong><br>
+    Tel: <a href="tel:+34900123456" style="color: #ccc;">+34 900 123 456</a><br>
+    Email: <a href="mailto:info@alaiktomugi.eus" style="color: #ccc;">info@alaiktomugi.eus</a><br>
+    Helbidea: Donostia kalea 7, 20001 Bilbo, Euskal Herria<br><br>
+    <a href="https://facebook.com"><img src="imgs/descarga.jpg" width="24" alt="FB"></a>
+    <a href="https://twitter.com"><img src="imgs/descarga (1).jpg" width="24" alt="TW"></a>
+    <a href="https://instagram.com"><img src="imgs/descarga.png" width="24" alt="IG"></a><br><br>
+    &copy; 2025 AlaiktoMUGI S.A. - Eskubide guztiak erreserbatuta.
   </div>
 </footer>
 

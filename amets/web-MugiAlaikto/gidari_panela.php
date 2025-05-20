@@ -81,12 +81,16 @@ body {
 </head>
 <body>
     <header class="main-header">
-        <div class="logo">
-            <img src="imgs/logo_sin_texto_ampliado.png" alt="AlaiktoMUGI logo">
-        </div>
+    <a href="index.php">
+  <div class="logo">
+    <img src="imgs/logo_sin_texto_ampliado.png" alt="AlaiktoMUGI logo">
+  </div>
+</a>
+
         <nav>
             <a href="index.php" class="button">Menua</a>
-            <a href="hasisaioa.php" class="button">Saioa Itxi</a>
+            <a href="saioa_itixi.php" class="button">Saioa Itxi</a>
+
         </nav>
     </header>
 

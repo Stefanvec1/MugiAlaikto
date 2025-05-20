@@ -17,24 +17,31 @@ include 'konexioa.php';
 
 <body>
 
-  <header class="main-header">
-    <div class="logo">
-      <img src="imgs/logo_sin_texto_ampliado.png" alt="AlaiktoMUGI logo">
-    </div>
-    <nav>
-      <a href="index.php" class="button">Menua</a>
-      <a href="historial.php" class="button">Historiala</a>
-      <a href="hasisaioa.php" class="button">Saioa Hasi</a>
-      <a href="gidari.php" class="button">Gidaria</a>
-    </nav>
-    <header>
-  <nav>
-    <?php if (isset($_SESSION['korreoa'])): ?>
-      <span><?php echo htmlspecialchars($_SESSION['korreoa']); ?></span>
+<header class="main-header" >
+  <div class="logo">
+    <a href="index.php">
+      <img src="imgs/logo_sin_texto_ampliado.png" alt="AlaiktoMUGI logo" style="max-width: 100%;">
+    </a>
+  </div>
+
+  <nav >
+    <a href="index.php" class="button" >Menua</a>
+    <a href="historial.php" class="button">Historiala</a>
+
+    <?php if (isset($_SESSION['gidari_korreoa']) || isset($_SESSION['usuario'])): ?>
+      <a href="saioa_itixi.php" class="button">Saioa Itxi</a>
     <?php else: ?>
+      <a href="hasisaioa.php" class="button">Saioa Hasi</a>
     <?php endif; ?>
   </nav>
+
+  <?php if (isset($_SESSION['korreoa'])): ?>
+    <div style="margin-top: auto; font-size: 0.9em; color: #ccc;">
+      👤 <?php echo htmlspecialchars($_SESSION['korreoa']); ?>
+    </div>
+  <?php endif; ?>
 </header>
+
 
   </header>
 

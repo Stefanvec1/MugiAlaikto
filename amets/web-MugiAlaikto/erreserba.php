@@ -56,9 +56,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
 
 <header class="main-header">
+<a href="index.php">
   <div class="logo">
     <img src="imgs/logo_sin_texto_ampliado.png" alt="AlaiktoMUGI logo">
   </div>
+</a>
+
   <nav>
     <a href="index.php" class="button">Menua</a>
     <a href="historial.php" class="button">Historiala</a>

@@ -14,9 +14,12 @@ include("konexioa.php");
 <body>
 
   <header class="main-header">
-    <div class="logo">
-      <img src="imgs/logo_sin_texto_ampliado.png" alt="AlaiktoMUGI logo">
-    </div>
+  <a href="index.php">
+  <div class="logo">
+    <img src="imgs/logo_sin_texto_ampliado.png" alt="AlaiktoMUGI logo">
+  </div>
+</a>
+
     <nav>
       <a href="index.php" class="button">Menua</a>
       <a href="historial.php" class="button">Historiala</a>
@@ -56,7 +59,6 @@ include("konexioa.php");
   <?php
   
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Recoger los datos del formulario
     $izena = $_POST['izena'];
     $abizena = $_POST['abizena'];
     $telefonoa = !empty($_POST['telefonoa']) ? $_POST['telefonoa'] : null;
@@ -64,24 +66,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $korreoa = $_POST['korreoa'];
     $pasahitza = $_POST['pasahitza'];
 
-    // Verificación de campos
+   
     if (empty($izena) || empty($abizena) || empty($korreoa) || empty($pasahitza)) {
         header("Location: erregistroa.php?message=rerregistratu");
         exit;
     } else {
-        // Preparar la consulta SQL
+        
         $stmt = $conn->prepare("INSERT INTO bezeroa (Izena, Abizena, Telefonoa, Helbidea, Korreoa, Pasahitza)
                                 VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssss", $izena, $abizena, $telefonoa, $helbidea, $korreoa, $pasahitza);
 
-        // Ejecutar la consulta y verificar si se insertó correctamente
+        
         if ($stmt->execute()) {
             header("Location: erregistroa.php?message=erregistratuta");
         } else {
             header("Location: erregistroa.php?message=rerregistratu");
         }
 
-        // Cerrar la consulta y la conexión
+        
         $stmt->close();
         $conn->close();
         exit;
